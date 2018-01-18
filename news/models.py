@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
+from django.core.urlresolvers import reverse
 
 # Create your models here.
 @python_2_unicode_compatible
@@ -11,8 +12,14 @@ class Column(models.Model):
     slug = models.CharField('栏目网址', max_length=256, db_index=True)
     intro = models.TextField('栏目简介', default='')
 
+    nav_display = models.BooleanField('导航显示', default=False)
+    home_display = models.BooleanField('首页显示', default=False)
+
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('column', args=(self.slug,))
 
     class Meta:
         verbose_name = '栏目'
@@ -37,6 +44,9 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('article', args=(self.pk,self.slug,))
 
     class Meta:
         verbose_name = '教程'
